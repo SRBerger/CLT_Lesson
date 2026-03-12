@@ -1,0 +1,116 @@
+---
+title: "The Central Limit Theorem in Action"
+format: html
+engine: knitr
+filters:
+  - webr
+---
+
+## Exploring the CLT
+Suppose you are working as a data analyst for a major amusement park. Management wants to ensure guests are leaving happy, which means keeping average wait times manageable.
+
+Historically, the wait times for all rides in the park follow an exponential distribution. There are many smaller attractions with very short waits, but a few massive roller coasters with wait times stretching over two hours.  Here are the population parameters we know:
+
+* Rate ($\lambda$): 0.04 (This defines the steepness of our exponential curve)
+* Population Mean ($\mu$): 25 minutes (The true average wait time of all rides)
+* Population Standard Deviation ($\sigma$): 25 minutes
+
+Management tasks you with surveying groups of 50 randomly selected guests as they exit the park, asking them to calculate their average wait time for the day ($\bar{Y}$).The park director asks: "What is the probability that a random group of 50 guests had an average wait time of less than 30 minutes?"
+
+Before we can answer the director, we have to figure out: **What is the distribution of $\bar{Y}$?**
+
+
+```{webr-r}
+# 1. SET THE VARIABLES
+n <- 5  # This is the sample size (number of guests per group)
+simulations <- 1000 # The number of times we repeat the survey
+
+# 2. THE POPULATION: Simulating all ride wait times in the park
+wait_times <- rexp(10000, rate = 0.04) 
+
+# 3. THE SAMPLING: Taking random samples of size 'n' and finding their averages
+sample_averages <- replicate(simulations, mean(sample(wait_times, n)))
+
+# 4. THE VISUALS: Plotting them side-by-side
+par(mfrow=c(1,2)) # Splits the output area into 2 columns
+
+# Chart A: The actual park (Highly Skewed)
+hist(wait_times, 
+     main = "Dist. of all Ride Wait Times", 
+     xlab = "Wait Time (Minutes)", 
+     col = "lightpink", 
+     border = "white", 
+     breaks = 30)
+
+# Chart B: The Sample Means
+hist(sample_averages, 
+     main = paste("Dist. of Averages of", n, "Random Ride Wait Times"), 
+     xlab = "Average Wait (Minutes)", 
+     col = "lightblue", 
+     border = "white", 
+     breaks = 30)
+
+```
+
+**Your Turn:**
+Answer the following questions.  Place a # before any lines that are not computer code.  
+```{webr-r}
+# 1. Run the code as is (n=5). Does the histogram have a left or right skew?
+
+# The histogram has a ________ skew.
+```
+
+
+```{webr-r}
+# 2. Run the code block above for each of these values of`n`: 
+# `30`, `50`, and `100`.  
+# Comment on what is happening to the shape of the histogram as n increases.
+
+
+```
+
+ 
+
+## The Central Limit Theorem
+The Central Limit Theorem states that if you take sufficiently large samples from a population, the distribution of the sample means will be approximately normally distributed, **even if the original population distribution is not normal.**
+
+Here is the formal statement of the theorem:
+
+Let $Y_1, Y_2, \cdots ,Y_n$ be independent and identically distributed random variables with $\text{E}[Y_i] = \mu$ and $\text{Var}[Y_i] = \sigma^2 < \infty$.  Define
+$$ U_n = \frac{\overline{Y} - \mu}{\sigma / \sqrt{n}} $$
+where $\overline{Y} = \frac{1}{n}\sum_{i=1}^nY_i$.
+Then the distribution function of $U_n$ approaches the standard normal distribution function for large values $n$ (typically greater than 30).  
+
+In other words,
+$$ U_n = \frac{\overline{Y} - \mu}{\sigma / \sqrt{n}} \sim N(0,1). $$
+
+## Answering the Theme Park Question
+What is the probability that a random group of 50 guests had an average wait time of less than 30 minutes?
+
+Now that we know the sample mean can be well approximated by standard normal random variables since we have a large sample size, we can use the pnorm function to compute the probability.  
+
+We need to compute $\text{P}(\overline{Y} < 30) = \text{P}\left(\frac{\overline{Y}-\mu}{\sigma / \sqrt{n}} <  \frac{30 - 25}{25/\sqrt{50}}\right) \approx \text{P}(Z < 1.414)$, use pnorm(1.414).
+
+```{webr-r}
+pnorm(1.414)
+```
+
+
+## Extra Practice Problems
+Solve each of the following problems in R using the Central Limit Theorem and then submit your numerical answers [HERE](https://forms.gle/tdbQDzh8xeWLQ4XY9){target="_blank"}.
+
+1) Achievement test scores of all high school seniors in a certain state have mean 60 and variance 64.  A random sample of n = 100 students from one large high school had a mean score of 58.  Is there evidence to suggest that this high school is inferior? To answer this, compute the probability the sample mean is at most 58.
+
+```{webr-r}
+pnorm( )
+
+```
+
+
+2) The service times for customers coming through a checkout counter in a retail store are independent random variables with mean 1.5 minutes and variance 1.0.  Approximate the probability that 100 customers will be served in less than 2 hours of total service time. 
+
+```{webr-r}
+pnorm( )
+
+```
+
