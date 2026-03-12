@@ -32,7 +32,7 @@ wait_times <- rexp(10000, rate = 0.04)
 sample_averages <- replicate(simulations, mean(sample(wait_times, n)))
 
 # 4. THE VISUALS: Plotting them side-by-side
-par(mfrow=c(1,2)) # Splits the output area into 2 columns
+par(mfrow=c(2,1)) # Splits the output area into 2 columns
 
 # Chart A: The actual park (Highly Skewed)
 hist(wait_times, 
