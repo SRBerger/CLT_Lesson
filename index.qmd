@@ -11,7 +11,6 @@ Suppose you are working as a data analyst for a major amusement park. Management
 
 Historically, the wait times for all rides in the park follow an exponential distribution. There are many smaller attractions with very short waits, but a few massive roller coasters with wait times stretching over two hours.  Here are the population parameters we know:
 
-* Rate ($\lambda$): 0.04 (This defines the steepness of our exponential curve)
 * Population Mean ($\mu$): 25 minutes (The true average wait time of all rides)
 * Population Standard Deviation ($\sigma$): 25 minutes
 
@@ -26,7 +25,7 @@ n <- 5  # This is the sample size (number of guests per group)
 simulations <- 1000 # The number of times we repeat the survey
 
 # 2. THE POPULATION: Simulating all ride wait times in the park
-wait_times <- rexp(10000, rate = 0.04) 
+wait_times <- rexp(10000, rate = 1/25) 
 
 # 3. THE SAMPLING: Taking random samples of size 'n' and finding their averages
 sample_averages <- replicate(simulations, mean(sample(wait_times, n)))
@@ -88,6 +87,8 @@ $$ U_n = \frac{\overline{Y} - \mu}{\sigma / \sqrt{n}} \sim N(0,1). $$
 What is the probability that a random group of 50 guests had an average wait time of less than 30 minutes?
 
 Now that we know the sample mean can be well approximated by standard normal random variables since we have a large sample size, we can use the pnorm function to compute the probability.  
+
+Let $Y_i$ be the waiting time of the ith guest.  
 
 We need to compute $\text{P}(\overline{Y} < 30) = \text{P}\left(\frac{\overline{Y}-\mu}{\sigma / \sqrt{n}} <  \frac{30 - 25}{25/\sqrt{50}}\right) \approx \text{P}(Z < 1.414)$, use pnorm(1.414).
 
